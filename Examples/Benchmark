@@ -1,1 +1,8 @@
-
+41:~/mumps$ ./mumps testdb  
+M> d ^DEMO1                                       
+Test #records :109000 
+[SQL Gateway] Connection to SQLite [local_mumps.db] established successfully.                                              
+1    example :insert into products(id,name,price) values (1,'product1',9383)  
+total seconds for sql 17  
+test on global   
+total seconds for mumps 25    M>
