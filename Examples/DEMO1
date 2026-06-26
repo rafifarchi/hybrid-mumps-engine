@@ -1,1 +1,39 @@
 
+A
+DEMO1
+DEMO1
+demo1 ;
+ d sql
+ d mumps
+ q
+sql ;
+ s d=",",g=$c(34)
+ S flag=$$DDL^SQLAPI("Sqite local","drop table products ")
+ S flag=$$DDL^SQLAPI("Sqite local","CREATE TABLE IF NOT EXISTS products (id INT, name TEXT, price REAL)")
+ W !,flag
+ s start=$p($H,d,2)
+ f i=1:1:100000 d
+ .s price=$R(10000)
+ .S id=i
+ .s name=g_"product"_i_g
+ .s values=id_d_name_d_price
+ .s command="insert into products(id,name,price) values ("_values_")"
+ .i i=1 w !,"example :",command
+ .s rep=$$DML^SQLAPI("Sqite local",command)
+ s end=$p($H,d,2)
+ w !,"total seconds for sql ",end-start
+ Q
+mumps ;
+ k ^pr
+ w !,"test on global"
+ s start=$p($H,d,2)
+ f i=1:1:100000 s ^pr(i,"price")=$R(10000)
+ s end=$p($H,d,2)
+ w !,"total seconds for mumps ",end-start
+ q
+M> d ^DEMO1 test insert 100000 records                                                1
+example :insert into products(id,name,price) values (1,"product1",4681)
+total seconds for sql 12    
+test on global            
+total seconds for mumps 37
+M>
