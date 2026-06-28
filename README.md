@@ -1,4 +1,4 @@
-# Hybrid MUMPS-SQL Enterprise Engine 🚀
+2# Hybrid MUMPS-SQL Enterprise Engine 🚀
 ### Architectural White Paper & Vision
 
 A lightweight, ultra-fast, modern SQL Gateway designed specifically for the **Raymond Douglas Newman MUMPS Engine**. This project introduces a production-ready paradigm shift: executing relational SQL operations directly inside a classic hierarchical tree database (MUMPS), without altering the compiler core.
@@ -46,6 +46,13 @@ MUMPS developers don't have to worry about JSON formatting or pipeline tricks. T
 * **Phase 4:** Cloud Remote PostgreSQL connectivity integration (Hybrid Layer).
 
 The architecture is natively decoupled, allowing the Multi-Database Coordinator to route commands dynamically based on the JSON payload, paving the way for future enterprise database connectors such as PostgreSQL, MySQL, or Oracle without altering the core runtime engine.
+
+## Documentation & Guides
+Custom high-performance relational gateway developer manuals:
+
+* 📘 [Programmer's Integration Guide](https://www.your-site.com/programmer_guide.html)
+* 💻 [M2SQL Shell REPL User Guide](https://www.your-site.com/m2sql_shell_guide.html)
+
 
 ---
 *Developed by Rafi Farchi. Inspired by the work of Raymond Douglas Newman and Sam Habiel.*
