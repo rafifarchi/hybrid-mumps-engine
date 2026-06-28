@@ -47,13 +47,13 @@ MUMPS developers don't have to worry about JSON formatting or pipeline tricks. T
 
 The architecture is natively decoupled, allowing the Multi-Database Coordinator to route commands dynamically based on the JSON payload, paving the way for future enterprise database connectors such as PostgreSQL, MySQL, or Oracle without altering the core runtime engine.
 
+
+
 ## Documentation & Guides
 Custom high-performance relational gateway developer manuals:
 
-* 📘 [Programmer's Integration Guide](https://www.your-site.com/programmer_guide.html)
-* 💻 [M2SQL Shell REPL User Guide](https://www.your-site.com/m2sql_shell_guide.html)
-
-
+* 📘 [Programmer's Integration Guide](https://www.test-prep.oo.gd/Testprep//programmer_guide.html)
+* 💻 [M2SQL Shell REPL User Guide](https://www.test-prep.oo.gd/Testprep/m2sql_guide.html)
 
 *
 
