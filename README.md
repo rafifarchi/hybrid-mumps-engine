@@ -54,5 +54,8 @@ Custom high-performance relational gateway developer manuals:
 * 💻 [M2SQL Shell REPL User Guide](https://www.your-site.com/m2sql_shell_guide.html)
 
 
+
+*
+
 ---
 *Developed by Rafi Farchi. Inspired by the work of Raymond Douglas Newman and Sam Habiel.*
