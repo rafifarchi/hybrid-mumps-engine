@@ -1,0 +1,101 @@
+Saved by %RS from [MGR,TEST] on 30 Jun 2026 at 11:47:23 AM
+%SQLAPI,%M2SQL
+%M2SQL
+M2SQL ; M2SQL Interactive SQL Shell (Optimized Chunking Edition)
+ s db="Sqite local"
+ f  d  q:(cmd="exit")
+ .w !,"M2sql > "
+ .r cmd
+ .q:cmd=""
+ .s ucmd=$$UPPER(cmd)
+ .q:ucmd="EXIT"!(ucmd="Q")
+ .s op=$p(ucmd," ")
+ .i op="BEGIN"!(op="COMMIT")!(op="ROLLBACK") d  q
+ ..s rep=$$DML^%SQLAPI(db,cmd)
+ ..i rep<0!($D(%SQLERR)) d SHOWERR q
+ ..w !,"Execution reply: ",rep
+ .i op="SELECT" d  q
+ ..d CLEANRES
+ ..s chunks=$$QUERY^%SQLAPI(db,cmd,"R")
+ ..i chunks<0!($D(%SQLERR)) d SHOWERR q
+ ..i chunks=0 w !,"0 rows returned." q
+ ..s totalRows=$G(SQLRCNT)
+ ..w !,"Chunks returned: ",chunks," | Total records: ",totalRows
+ ..s rowID=0
+ ..f chk=1:1:chunks d
+ ...s chunkData=$G(@("R"_chk))
+ ...q:chunkData=""
+ ...s pieces=$L(chunkData,$C(0))
+ ...f p=1:1:pieces d
+ ....s row=$P(chunkData,$C(0),p)
+ ....q:row=""
+ ....s rowID=rowID+1
+ ....w !,"Row ",rowID,": ",row
+ .i op="UPDATE"!(op="INSERT")!(op="DELETE") d  q
+ ..s rep=$$DML^%SQLAPI(db,cmd)
+ ..i rep<0!($D(%SQLERR)) d SHOWERR q
+ ..w !,"Execution reply (Rows affected): ",rep
+ .s rep=$$DDL^%SQLAPI(db,cmd)
+ .i rep<0!($D(%SQLERR)) d SHOWERR q
+ .w !,"Execution reply: ",rep
+ q
+SHOWERR ;
+ w !,"[SQL Gateway Error] Command failed!"
+ i $D(%SQLERR) w !,"Details: ",%SQLERR
+ e  w !,"Details: Internal execution error"
+ q
+CLEANRES ;
+ n i,v
+ f i=1:1:2000 s v="R"_i k @v
+ k %SQLROWCNT
+ q
+UPPER(str) ;
+ q $tr(str,"abcdefghijklmnopqrstuvwxyz","ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
+%SQLAPI
+SQLAPI ; SQL Gateway Wrapper API for MUMPS
+ QUIT
+EXEC(DB,TYPE,CMD,VAR) New Q,JSON,REPLY
+ KILL %SQLERR
+ SET Q=$C(34)
+ SET JSON="{"_Q_"Target db"_Q_":"_Q_DB_Q_","_Q_"Command type"_Q_":"_Q_TYPE_Q_","_Q_"Command text"_Q_":"_Q_CMD_Q_","_Q_"Result variable"_Q_":"_Q_VAR_Q_"}"
+ SET REPLY=$P("%%%SQL%%%",JSON,1)
+ QUIT REPLY
+DDL(DB,COMMAND) ;
+ QUIT $$EXEC(DB,"Ddl",COMMAND,"NONE")
+DML(DB,COMMAND) ;
+ QUIT $$EXEC(DB,"Dml",COMMAND,"NONE")
+QUERY(DB,COMMAND,RES) ;
+ QUIT $$EXEC(DB,"Query",COMMAND,RES)
+COMMIT(DB) ;
+ QUIT $$EXEC(DB,"Trans","COMMIT","NONE")
+ROLLBACK(DB) ;
+ QUIT $$EXEC(DB,"Trans","ROLLBACK","NONE")
+GETNXTR(PREFIX) ;
+ NEW DATA,ROW
+ IF $GET(PREFIX)="" SET PREFIX="R"
+ IF '$DATA(SQLCURCHK(PREFIX)) SET SQLCURCHK(PREFIX)=1,SQLCURPTR(PREFIX)=1
+FETCH SET DATA=$GET(@(PREFIX_SQLCURCHK(PREFIX)))
+ IF DATA="" DO CLEAN(PREFIX) QUIT "NILL"
+ SET ROW=$PIECE(DATA,$CHAR(0),SQLCURPTR(PREFIX))
+ SET SQLCURPTR(PREFIX)=SQLCURPTR(PREFIX)+1
+ IF SQLCURPTR(PREFIX)>$LENGTH(DATA,$CHAR(0)) SET SQLCURCHK(PREFIX)=SQLCURCHK(PREFIX)+1,SQLCURPTR(PREFIX)=1
+ IF ROW="" GOTO FETCH
+ QUIT ROW
+CLEAN(PFX) ;
+ KILL SQLCURCHK(PFX),SQLCURPTR(PFX)
+ QUIT
+SPLITR(REC,COLS,IDX) ;
+ NEW I,COL,VAL,VNAME
+ IF REC=""!(COLS="") QUIT
+ FOR I=1:1:$LENGTH(COLS,",") DO
+ .SET COL=$PIECE(COLS,",",I)
+ .QUIT:COL=""
+ .IF $LENGTH(COL)>8 SET COL=$EXTRACT(COL,1,8)
+ .SET VAL=$PIECE(REC,"|",I)
+ .SET VNAME=COL
+ .IF $GET(IDX)'="" SET VNAME=COL_"("_$C(34)_IDX_$C(34)_")"
+ .SET @VNAME=VAL
+ QUIT
+
+
