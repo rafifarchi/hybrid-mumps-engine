@@ -1,0 +1,28 @@
+# M2SQL Gateway - Installation & Setup Guide
+
+This guide explains how to integrate the M2SQL Gateway into the Raymond Newman MUMPS (v1.71) engine. 
+
+### Prerequisites
+Before proceeding, ensure that you have SQLite installed on your system. If not, install it using your package manager:
+```bash
+sudo apt-get install sqlite3 libsqlite3-dev
+
+
+Step 1: Download Raymond Newman MUMPS Core
+​Do not clone the entire Newman system into this repository. Instead, follow these steps:
+​Download the official Raymond Newman MUMPS v1.71 source code from SourceForge.
+​Extract the downloaded archive onto your local environment.
+​Stop right before running the compilation (make) process.
+​Step 2: Inject M2SQL Runtime Files
+​Locate the runtime/ directory generated within your extracted Newman MUMPS folder.
+​Copy the 4 files located under the runtime/ folder of this Git repository and paste them directly into that local runtime/ directory, overwriting any existing files if prompted.
+​Step 3: Replace the Makefile
+​Go to the installation/ directory in this Git repository and locate the customized Makefile.
+​Replace the original Makefile in the root of your local Newman MUMPS folder with this customized version.
+​Compile the system by running:
+Step 4: Import MUMPS Routines
+​Once the system compiles and starts successfully through its standard path, import the global M2SQL utilities into your UCIs:
+​Perform a ROUTINE RESTORE (using ^%RR) for the % routines into the MGR UCI to ensure global system-wide availability.
+​Perform a ROUTINE RESTORE for the application routines into your standard workspace UCI, or alternatively into your test environment (e.g., TST UCI).
+​Documentation & Usage
+​For detailed instructions, architecture overviews, and developer guides on how to utilize the SQL API, transactions, and automated column splitting, please refer to the documentation files linked in the main README.
