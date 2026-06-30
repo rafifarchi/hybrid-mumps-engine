@@ -1,0 +1,56 @@
+Saved by %RS from [TST,TEST] on 30 Jun 2026 at 11:45:10 AM
+*
+DEMO1
+demo1 ;
+ R !,"Test #records :",totrec
+ d sql
+ d mumps
+ q
+sql ;
+ s db="Sqite local"
+ s d=",",g=$c(34)
+ ;S flag=$$DDL^%SQLAPI(db,"drop table products ")
+ S flag=$$DDL^%SQLAPI(db,"CREATE TABLE IF NOT EXISTS products (id INT, name TEXT, price REAL)")
+ W !,flag
+ s flag=$$DML^%SQLAPI(db,"BEGIN TRANSACTION")
+ s start=$p($H,d,2)
+ f i=1:1:totrec d
+ .s price=$R(10000)
+ .S id=i
+ .s name="'product"_i_"'"
+ .s values=id_d_name_d_price
+ .s command="insert into products(id,name,price) values ("_values_")"
+ .i i=1 w !,"example :",command
+ .s rep=$$DML^%SQLAPI(db,command)
+ s rep=$$COMMIT^%SQLAPI(db)
+ s end=$p($H,d,2)
+ w !,"total seconds for sql ",end-start
+ Q
+mumps ;
+ k ^pr
+ w !,"test on global"
+ s start=$p($H,d,2)
+ f i=1:1:totrec s ^pr(i,"price")=$R(10000)
+ s end=$p($H,d,2)
+ w !,"total seconds for mumps ",end-start
+ q
+
+DEMO2
+TESTL ;
+ NEW DB,SQL,CHUNKS,REC,ROWCNT
+ SET DB="Sqite local"
+ SET SQL="SELECT id USERID, name USRNAME FROM users"
+ SET CHUNKS=$$QUERY^%SQLAPI(DB,SQL,"R")
+ IF CHUNKS=0 QUIT
+ SET ROWCNT=0
+ FOR  DO  QUIT:REC="NILL"
+ .SET REC=$$GETNXTR^%SQLAPI("R")
+ .QUIT:REC="NILL"
+ .SET ROWCNT=ROWCNT+1
+ .DO SPLITR^%SQLAPI(REC,SQLCOLS,ROWCNT)
+ FOR I=1:1:ROWCNT DO
+ .WRITE !,"Row: ",I," -> ID: ",USERID(I)," Name: ",USRNAME(I)
+ QUIT
+ 
+
+
